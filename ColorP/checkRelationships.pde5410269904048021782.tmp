@@ -1,0 +1,16 @@
+void checkRelationships(ArrayList<Note> np){
+
+	int[] dists = new int[np.size()-1];
+  
+	int[] major = {4, 3};
+  int[] minor = {3, 4};
+  
+  for(int i = 0; i > np.size() -1; i++){
+    println(np.get(i + 1).note - np.get(i).note);
+  
+     dists[i] = np.get(i + 1).note - np.get(i).note;
+  }
+  
+  }
+	
+}

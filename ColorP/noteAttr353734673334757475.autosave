@@ -1,0 +1,48 @@
+void noteAttr(){
+  int NOTE_ON = 0x90;
+
+  String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+ 
+
+  try
+  {
+    File selection = new File(dataPath("title-theme.mid"));
+    playMid = MidiSystem.getSequencer();
+    readMid = MidiSystem.getReceiver();
+
+    playMid.open();
+    Sequence fileSequence = MidiSystem.getSequence(selection);
+    playMid.setSequence(fileSequence);
+
+    playMid.start();
+    for (Track track : fileSequence.getTracks()) {
+      for (int i = 0; i < track.size(); i++) {
+        MidiEvent event = track.get(i);
+        
+        MidiMessage msg = event.getMessage();
+        if (msg instanceof ShortMessage) {
+          ShortMessage sm = (ShortMessage)msg;
+           println(sm.getStatus());
+          int k = sm.getData1();
+          int octave = (k /12) -1;
+          int note = k %12;
+          int velocity = sm.getData2();
+          String noteName = NOTE_NAMES[k%12];
+          if (sm.getCommand() == NOTE_ON) {
+            boolean NoteOn = true;
+          } else {
+            boolean NoteOn = false;
+            
+          }
+          if(velocity != 0){
+          println(NOTE_NAMES[k % 12] + " " + sm.getData2());
+          }
+        }
+      }
+    }
+  }
+  catch(Exception e)
+  {
+    println("FILE NOT FOUND!!");
+  }
+}

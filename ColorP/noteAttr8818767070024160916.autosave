@@ -1,0 +1,68 @@
+class noteHandler {
+  Format f;
+  int k;
+  int octave;
+  int note;
+  int velocity;
+  String noteName;
+  boolean NoteOn;
+  Sequencer playMid;
+  Receiver readMid;
+  Transmitter transMid;
+  noteHandler(Format form) {
+    f = form;
+  }
+
+  void handleMidi(String fileName) {
+    int NOTE_ON = 0x90;
+
+    try
+    {
+      File selection = new File(dataPath( fileName + ".mid"));
+      playMid = MidiSystem.getSequencer();
+      readMid = MidiSystem.getReceiver();
+      transMid = MidiSystem.getTransmitter();
+      playMid.open();
+      Sequence fileSequence = MidiSystem.getSequence(selection);
+      playMid.setSequence(fileSequence);
+      transMid.setReceiver(readMid);
+
+      playMid.start();
+      for (Track track : fileSequence.getTracks()) {
+        for (int i = 0; i < track.size(); i++) {
+          MidiEvent event = track.get(i);
+          MidiMessage msg = event.getMessage();
+          if (msg instanceof ShortMessage) {
+            ShortMessage sm = (ShortMessage)msg;
+            if (sm.getCommand() == NOTE_ON) {
+              NoteOn = true;
+            } else {
+              NoteOn = false;
+            }
+            if (NoteOn) {
+              k = sm.getData1();
+              octave = (k /12) -1;
+              note = k %12;
+
+              velocity = sm.getData2();
+              noteName = NOTE_NAMES[k%12];
+              print(noteName);
+            } else {
+              println("NOTE OFF");
+            }
+          }
+        }
+      }
+    }
+    catch(Exception e)
+    {
+      println("FILE NOT FOUND!!");
+    }
+  }
+  void draw() {
+
+
+
+    f.spark(note, octave);
+  }
+}

@@ -1,0 +1,41 @@
+class noteHandler {
+  
+  Format f;
+  int bpm;
+  Sequencer playMid;
+  Receiver readMid;
+  int NOTE_ON;
+  Receiver reci = new Rec();
+  Transmitter seqTrans;
+  noteHandler(){
+    
+  try{
+    File selection = new File(dataPath("title-theme.mid"));
+    playMid = MidiSystem.getSequencer();
+    Sequence fileSequence = MidiSystem.getSequence(selection);
+    playMid.setSequence(fileSequence);
+    seqTrans = playMid.getTransmitter();
+    seqTrans.setReceiver(reci);
+    readMid = MidiSystem.getReceiver();
+    
+    playMid.open();
+   
+   
+    playMid.start();
+    }
+
+  catch(Exception e)
+    {
+      println("FILE NOT FOUND!!");
+    }
+  }
+
+
+
+
+
+
+  void draw() {
+
+  }
+}
